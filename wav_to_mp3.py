@@ -43,11 +43,10 @@ def do_filt_deci(file, deci=8000, low=100, high=6000, out_dir=''):
     
 def normalize_file(file, normtype='fixed', amount=5):
     wav = AudioSegment.from_file(file)
-    match normtype:
-        case 'fixed':
-            wav = wav.apply_gain(amount)
-        case 'max':
-            wav = effects.normalize(wav, amount)
+    if normtype == 'fixed':
+        wav = wav.apply_gain(amount)
+    elif normtype == 'max':
+        wav = effects.normalize(wav, amount)
     
     return wav
 
@@ -95,7 +94,7 @@ def main():
         if cfg['delete_wav']:
             os.remove(this_file)
         pb.update(1)
-    if cfg['delete_wav'] and cfg['']:
+    if cfg['delete_wav'] and cfg['out_wav']:
         os.rmdir(cfg['out_wav'])
     return out_wav, out_mp3
 
