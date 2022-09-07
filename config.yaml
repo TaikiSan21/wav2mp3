@@ -1,0 +1,19 @@
+# folder of files to read in
+in_dir: 'CCES_010_20s_Clips'
+# folder to put decimated MP3 and wav files
+out_mp3: 'decimp3'
+out_wav: 'deciwav'
+# whether or not to delete decimated .wav files and out_wav folder
+delete_wav: True
+# target SR for MP3 - 44.1kHz is standard audio format
+mp3_sr_hz: 44100
+# filter settings
+high_filt_hz: 4000
+low_filt_hz: 100
+# normalizing - 'fixed' or 'max'. 
+# 'fixed' adds the same dB value (norm_value) to each wav file
+# 'max' adjusts each file to the max value, here norm_value is 
+# how close (in dB) to get to max. E.g. norm_value 5 means 5dB less
+#than max volume, higher numbers are quieter in this case.
+norm_type: 'fixed'
+norm_value: 20
