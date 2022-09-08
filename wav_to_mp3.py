@@ -77,7 +77,7 @@ def make_spec_plot(file, cfg):
     plt.xlabel('Time [s]')
     fig.tight_layout()
     fname = re.sub('wav$', 'png', os.path.basename(file))
-    plt.savefig(os.path.join(cfg['plot_dir'], fname))
+    plt.savefig(os.path.join(cfg['out_spec'], fname))
 
 def main():
     # -*- coding: utf-8 -*-
@@ -115,7 +115,7 @@ def main():
                                  wav_dir)
         out_wav.append(this_file)
         if cfg['do_plot']:
-            os.makedirs(cfg['spec_config']['plot_dir'], exist_ok=True)
+            os.makedirs(cfg['spec_config']['out_spec'], exist_ok=True)
             make_spec_plot(this_file, cfg['spec_config'])
         aud_seg = normalize_file(this_file, cfg['norm_type'], cfg['norm_value'])
         this_out = re.sub('wav$', 'mp3', os.path.basename(this_file))

@@ -29,5 +29,5 @@ spec_config: {
     zmax: 0,
     fmin: 100,
     fmax: 3000,
-    plot_dir: 'spectrograms'
+    out_spec: 'spectrograms'
 }
