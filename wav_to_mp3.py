@@ -14,6 +14,7 @@ import argparse
 from tqdm import trange
 import yaml
 import re
+import matplotlib.pyplot as plt
 
 def do_decimate(wav, srFrom, srTo):
     # decimation factor can be non-int
@@ -50,6 +51,34 @@ def normalize_file(file, normtype='fixed', amount=5):
     
     return wav
 
+def make_spec_plot(file, cfg):
+    sr, wav = wavfile.read(file)
+    wind = signal.get_window('hanning', cfg['nfft'])
+    f, t, spec = signal.spectrogram(wav, 
+                                    fs=sr, 
+                                    window=wind,
+                                    nfft = cfg['nfft'],
+                                    noverlap = cfg['nfft'] * cfg['overlap'],
+                                    mode = 'complex',
+                                    scaling = 'density')
+    P = abs(spec)
+    P /= np.max(P)
+    P = 10*np.log10(P)
+    filt = (f >= cfg['fmin']) & (f <= cfg['fmax'])
+    f_filt = f[filt]
+    spec_filt = P[filt, :]
+    spec_filt[spec_filt <= cfg['zmin']] = cfg['zmin']
+    spec_filt[spec_filt >= cfg['zmax']] = cfg['zmax']
+    
+    res = 72
+    fig = plt.figure(figsize=(cfg['width']/res, cfg['height']/res), dpi=res)
+    plt.pcolor(t, f_filt, spec_filt)
+    plt.ylabel('Frequency [Hz]')
+    plt.xlabel('Time [s]')
+    fig.tight_layout()
+    fname = re.sub('wav$', 'png', os.path.basename(file))
+    plt.savefig(os.path.join(cfg['plot_dir'], fname))
+
 def main():
     # -*- coding: utf-8 -*-
     """
@@ -85,6 +114,9 @@ def main():
                                  cfg['high_filt_hz'],
                                  wav_dir)
         out_wav.append(this_file)
+        if cfg['do_plot']:
+            os.makedirs(cfg['spec_config']['plot_dir'], exist_ok=True)
+            make_spec_plot(this_file, cfg['spec_config'])
         aud_seg = normalize_file(this_file, cfg['norm_type'], cfg['norm_value'])
         this_out = re.sub('wav$', 'mp3', os.path.basename(this_file))
         this_out = os.path.join(mp3_dir, this_out)
