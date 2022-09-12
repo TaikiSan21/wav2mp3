@@ -78,6 +78,7 @@ def make_spec_plot(file, cfg):
     fig.tight_layout()
     fname = re.sub('wav$', 'png', os.path.basename(file))
     plt.savefig(os.path.join(cfg['out_spec'], fname))
+    plt.close(fig)
 
 def main():
     # -*- coding: utf-8 -*-
