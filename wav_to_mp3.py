@@ -21,20 +21,24 @@ def do_decimate(wav, srFrom, srTo):
     q = srFrom / srTo
     # do order-8 cheby filter anti-alias
     sos = signal.cheby1(8, .05, .8/q, output='sos')
-    filt_wav = signal.sosfiltfilt(sos, wav)
+    filt_wav = signal.sosfiltfilt(sos, wav, axis=0)
     # get every q-th item from original wav
     deci_seq = np.array([x * q for x in range(0, np.int32(len(wav)/q))]).astype(np.int32)
     return filt_wav[deci_seq]
 
-def do_filt_deci(file, deci=8000, low=100, high=6000, out_dir=''):
+def do_filt_deci(file, deci=8000, low=100, high=6000, out_dir='', debug=False):
     sr, wav = wavfile.read(file)
+    if debug:
+        print(len(wav))
+        print(sr)
+        print(file)
     sos = signal.butter(4, low, btype='high', fs=sr, output='sos')
-    wav = signal.sosfiltfilt(sos, wav)
+    wav = signal.sosfiltfilt(sos, wav, axis=0)
     if high > deci:
         high = deci
     if high < deci:
         sos = signal.butter(4, high, btype='low', fs=sr, output='sos')
-        wav = signal.sosfiltfilt(sos, wav)
+        wav = signal.sosfiltfilt(sos, wav, axis=0)
     
     wav = do_decimate(wav, sr, deci)
     fname = 'Deci'+str(deci)+'_'+os.path.basename(file)
@@ -53,6 +57,8 @@ def normalize_file(file, normtype='fixed', amount=5):
 
 def make_spec_plot(file, cfg):
     sr, wav = wavfile.read(file)
+    if len(wav.shape) > 1:
+        wav = wav[:, cfg['channel']-1]
     wind = signal.get_window('hanning', cfg['nfft'])
     f, t, spec = signal.spectrogram(wav, 
                                     fs=sr, 
@@ -60,7 +66,8 @@ def make_spec_plot(file, cfg):
                                     nfft = cfg['nfft'],
                                     noverlap = cfg['nfft'] * cfg['overlap'],
                                     mode = 'complex',
-                                    scaling = 'density')
+                                    scaling = 'density',
+                                    axis=0)
     P = abs(spec)
     P /= np.max(P)
     P = 10*np.log10(P)
@@ -113,7 +120,8 @@ def main():
                                  cfg['mp3_sr_hz'], 
                                  cfg['low_filt_hz'], 
                                  cfg['high_filt_hz'],
-                                 wav_dir)
+                                 wav_dir,
+                                 cfg['debug'])
         out_wav.append(this_file)
         if cfg['do_plot']:
             os.makedirs(cfg['spec_config']['out_spec'], exist_ok=True)
@@ -127,8 +135,12 @@ def main():
         if cfg['delete_wav']:
             os.remove(this_file)
         pb.update(1)
+    pb.close()
     if cfg['delete_wav'] and cfg['out_wav']:
-        os.rmdir(cfg['out_wav'])
+        try:
+            os.rmdir(cfg['out_wav'])
+        except:
+            print('"out_wav" directory had other files, so was not deleted')
     return out_wav, out_mp3
 
 # this happens when you call wav_to_mp3.py from command line
