@@ -46,8 +46,10 @@ def do_filt_deci(file, deci=8000, low=100, high=6000, out_dir='', debug=False):
     wavfile.write(fname, deci, wav.astype(np.int16))
     return fname
     
-def normalize_file(file, normtype='fixed', amount=5):
+def normalize_file(file, normtype='fixed', amount=5, channel=1):
     wav = AudioSegment.from_file(file)
+    if wav.channels > 1:
+        wav = wav.split_to_mono()[channel-1]
     if normtype == 'fixed':
         wav = wav.apply_gain(amount)
     elif normtype == 'max':
@@ -55,10 +57,10 @@ def normalize_file(file, normtype='fixed', amount=5):
     
     return wav
 
-def make_spec_plot(file, cfg):
+def make_spec_plot(file, cfg, channel):
     sr, wav = wavfile.read(file)
     if len(wav.shape) > 1:
-        wav = wav[:, cfg['channel']-1]
+        wav = wav[:, channel-1]
     wind = signal.get_window('hanning', cfg['nfft'])
     f, t, spec = signal.spectrogram(wav, 
                                     fs=sr, 
@@ -125,8 +127,8 @@ def main():
         out_wav.append(this_file)
         if cfg['do_plot']:
             os.makedirs(cfg['spec_config']['out_spec'], exist_ok=True)
-            make_spec_plot(this_file, cfg['spec_config'])
-        aud_seg = normalize_file(this_file, cfg['norm_type'], cfg['norm_value'])
+            make_spec_plot(this_file, cfg['spec_config'], cfg['channel'])
+        aud_seg = normalize_file(this_file, cfg['norm_type'], cfg['norm_value'], cfg['channel'])
         this_out = re.sub('wav$', 'mp3', os.path.basename(this_file))
         this_out = os.path.join(mp3_dir, this_out)
         outf = aud_seg.export(this_out, format='mp3')

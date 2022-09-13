@@ -17,6 +17,8 @@ low_filt_hz: 100
 #than max volume, higher numbers are quieter in this case.
 norm_type: 'fixed'
 norm_value: 20
+# which channel to use for mp3 and spectrogram
+channel: 1
 # Logical flag to make plots 
 do_plot: True
 # spectrogram params - these are taken from Anne's R code
@@ -29,8 +31,7 @@ spec_config: {
     zmax: 0,
     fmin: 100,
     fmax: 3000,
-    out_spec: 'spectrograms',
-    channel: 1
+    out_spec: 'spectrograms'
 }
 # print debug stuff
 debug: False
