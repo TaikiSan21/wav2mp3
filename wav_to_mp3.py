@@ -76,8 +76,13 @@ def make_spec_plot(file, cfg, channel):
     filt = (f >= cfg['fmin']) & (f <= cfg['fmax'])
     f_filt = f[filt]
     spec_filt = P[filt, :]
-    spec_filt[spec_filt <= cfg['zmin']] = cfg['zmin']
-    spec_filt[spec_filt >= cfg['zmax']] = cfg['zmax']
+    if cfg['q_scale']:
+        q_lim = np.quantile(spec_filt, q=cfg['q'])
+        spec_filt[spec_filt < q_lim[0]] = q_lim[0]
+        spec_filt[spec_filt > q_lim[1]] = q_lim[1]
+    else:
+        spec_filt[spec_filt <= cfg['zmin']] = cfg['zmin']
+        spec_filt[spec_filt >= cfg['zmax']] = cfg['zmax']
     
     res = 72
     fig = plt.figure(figsize=(cfg['width']/res, cfg['height']/res), dpi=res)

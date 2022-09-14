@@ -1,5 +1,5 @@
 # folder of files to read in
-in_dir: 'badwavtest'
+in_dir: 'CCES_010_20s_Clips'
 # folder to put decimated MP3 and wav files
 out_mp3: 'decimp3'
 out_wav: 'deciwav'
@@ -27,11 +27,13 @@ spec_config: {
     overlap: .9,
     width: 792,
     height: 462,
-    zmin: -15,
+    zmin: -30,
     zmax: 0,
     fmin: 100,
     fmax: 3000,
-    out_spec: 'spectrograms'
+    out_spec: 'spectrograms',
+    q_scale: True,
+    q: [.02, 1]
 }
 # print debug stuff
 debug: False
