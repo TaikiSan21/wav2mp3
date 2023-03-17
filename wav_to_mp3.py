@@ -61,7 +61,7 @@ def make_spec_plot(file, cfg, channel):
     sr, wav = wavfile.read(file)
     if len(wav.shape) > 1:
         wav = wav[:, channel-1]
-    wind = signal.get_window('hanning', cfg['nfft'])
+    wind = signal.get_window('hann', cfg['nfft'])
     f, t, spec = signal.spectrogram(wav, 
                                     fs=sr, 
                                     window=wind,
