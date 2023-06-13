@@ -10,13 +10,17 @@ mp3_sr_hz: 44100
 # filter settings
 high_filt_hz: 4000
 low_filt_hz: 100
-# normalizing - 'fixed' or 'max'. 
+# normalizing - 'fixed', 'max', or 'threshold'. 
 # 'fixed' adds the same dB value (norm_value) to each wav file
 # 'max' adjusts each file to the max value, here norm_value is 
 # how close (in dB) to get to max. E.g. norm_value 5 means 5dB less
-#than max volume, higher numbers are quieter in this case.
-norm_type: 'fixed'
-norm_value: 20
+# than max volume, higher numbers are quieter in this case.
+# 'threshold' adds the same dB value like 'fixed', but the result
+# will not go higher than a specified threshold value. For this
+# norm_value must be a list of two numbers e.g. [20, -15] will add
+# 20dB, but the result will be capped at -15dB
+norm_type: 'threshold'
+norm_value: [20, -48]
 # which channel to use for mp3 and spectrogram
 channel: 1
 # Logical flag to make plots 

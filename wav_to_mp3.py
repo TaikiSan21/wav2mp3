@@ -51,10 +51,22 @@ def normalize_file(file, normtype='fixed', amount=5, channel=1):
     if wav.channels > 1:
         wav = wav.split_to_mono()[channel-1]
     if normtype == 'fixed':
+        if isinstance(amount, list):
+            print('\nERROR: "norm_value" must be an int not a list')
+            raise SystemExit(1)
         wav = wav.apply_gain(amount)
     elif normtype == 'max':
+        if isinstance(amount, list):
+            print('\nERROR: "norm_value" must be an int not a list')
+            raise SystemExit(1)
         wav = effects.normalize(wav, amount)
-    
+    elif normtype == 'threshold':
+        if not isinstance(amount, list) or not len(amount) == 2:
+            print(('\nERROR: "norm_value" must be a list of two numbers for '
+                  '"norm_type" "threshold"'))
+            raise SystemExit(1)
+        add = np.min([amount[1] - wav.dBFS, amount[0]])
+        wav = wav.apply_gain(add)
     return wav
 
 def make_spec_plot(file, cfg, channel):

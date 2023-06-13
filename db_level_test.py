@@ -8,13 +8,10 @@ import os
 from pydub import AudioSegment
 from pydub import effects
 
-folder = 'CCES_010_Add10dB'
+folder = 'CCES_010'
 # folder = 'louder'
-files_mp3 = [os.path.join(folder, x) for x in os.listdir(folder) if 'mp3' in x]
+files_mp3 = [os.path.join(folder, x) for x in os.listdir(folder) if 'wav' in x]
 files_png = [os.path.join(folder, x) for x in os.listdir(folder) if 'png' in x]
-
-#%%
-aseg = AudioSegment.from_file(files_mp3[0])
 
 #%%
 db_dict_orig = {'db': [],
@@ -32,8 +29,9 @@ plt.plot(db_dict_orig['db'], 'b',
 
 #%%
 import pandas as pd
-df = pd.DataFrame(db_dict)
+df = pd.DataFrame(db_dict_orig)
 df['file'] = files_mp3
+df.to_csv('../R_Projects/OceanVoices/wav_db_orig.csv')
 #%%
 from PIL import Image, ImageDraw
 import numpy as np
