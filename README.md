@@ -1,10 +1,15 @@
 # wav2mp3
 
-python tool for decimating and creating MP3s for Zooniverse project
+**wav2mp3** is a Python tool for decimating wav files, converting them to mp3
+format, and creating spectrogram images for the decimated clips. It was originally
+developed as part of a workflow to efficiently create image/audio clips for
+a [Zooniverse](https://www.zooniverse.org/) project. This document contains an
+installation guide that is aimed at users that are not familiar with  Python,
+conda environments, and running code from the command line. There is also
+an appendix with some background information on conda environments aimed at R
+users that may not be familiar with what an "environment" is or its purpose.
 
-wav2mp3  Installation and User Guide
-
-**INSTALLATION**
+## INSTALLATION
 
 First you will need to **install Python and Conda** (an environment / package manager for Python). I recommend using Miniconda here:
 
@@ -42,7 +47,7 @@ You should see something like this
 
 If nothing has gone wrong, we're done!
 
-**wav2mp3 USER GUIDE**
+## wav2mp3 USER GUIDE
 
 We'll run the code from the command line so first make sure you have a cmd open and navigate to the wav2mp3 folder we downloaded from GitHub. For convenience I recommend creating a cmd shortcut that always opens in this directory (see **Appendix II**) so that you don't have to **cd** to this directory every time. Next we'll **activate** the conda environment we created in the setup with **conda activate wav2mp3**. **\*NOTE\*** if this is your first time using conda, you may need to run the command **conda init cmd.exe** first, then restart your cmd prompt before doing this.
 
@@ -100,7 +105,7 @@ Before we actually run the code, we need to set-up the parameters to tell it wha
 
 Once **python wav_to_mp3.py** you've set up your parameters, we're ready to run code! I recommend starting with a small folder first, it will probably take some trial and error to get the normalization settings to what you want. To run the code, use the command to start processing wav files! **NOTE** all paths in the **config.yaml** file will be relative to the directory you run this command from, so it is best to write out the full path to the folders you want in the config file. You should see a progress bar showing how many of the files have been processed, let me know if you have any problems or questions!
 
-**APPENDIX I - Primer on Conda & Environments for R Users**
+## APPENDIX I - Primer on Conda & Environments for R Users
 
 **What are environments?** Environments are a part of Python that can be fairly confusing coming from R since there isn't an equivalent. In R when we install packages, they are always installed globally for all R sessions. When you install a package in R it is always available any time you open R. This is not the case for Python, because standard practice in Python is to use environments - these are basically a small subset of packages and a Python installation that are isolated from the rest of your Python packages. If you install a package for one Python environment, it is not available to any of your other Python environments. So from Python's perspective, the way we use R is as if we have just a single global environment. 
 
@@ -110,7 +115,7 @@ Once **python wav_to_mp3.py** you've set up your parameters, we're ready to run 
 
 **How?** Before running Python code, or starting to develop a new Python project, we need to tell Python which environment we want to use (or create a new one). We do this with the command **conda activate \<envname\>** (or **conda env create -n \<envname\>** to create a new blank environment). Then we can run code that makes use of the packages in that environment, or install new packages using the command **conda install \<pkgname\>.** To exit the environment when you are either done working or need to switch to a different project, use **conda deactivate**. **\*\*NOTE: DO NOT USE \<\> IN THE ACTUAL COMMANDS \*\***
 
-**APPENDIX II - cmd Shortcut**
+## APPENDIX II - cmd Shortcut
 
 Create shortcut for cmd that always opens with this folder as current directory (no need to **cd** to desired location)
 
